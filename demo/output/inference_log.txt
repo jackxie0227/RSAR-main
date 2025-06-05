@@ -1,0 +1,42 @@
+[2025-05-24 20:32:35]
+Config: configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/ROI-Transformer.pth
+Model Parameters: 55.29M
+Test Images: 100
+Avg Inference Time: 0.2158s
+----------------------------------------
+[2025-05-24 20:35:35]
+Config: configs/redet/redet-le90_re50_refpn_1x_rsar.py
+Checkpoint: weights/FSModel/ReDet.pth
+Model Parameters: 31.60M
+Test Images: 100
+Avg Inference Time: 0.2814s
+----------------------------------------
+[2025-05-24 20:38:21]
+Config: configs/rotated_fcos/rotated-fcos-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/Rotated-FCOS.pth
+Model Parameters: 32.13M
+Test Images: 100
+Avg Inference Time: 0.1038s
+----------------------------------------
+[2025-05-24 20:41:16]
+Config: configs/oriented_rcnn/oriented-rcnn-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/O-RCNN.pth
+Model Parameters: 41.36M
+Test Images: 100
+Avg Inference Time: 0.2713s
+----------------------------------------
+[2025-05-24 22:41:05]
+Config: configs/s2anet/s2anet-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/S2ANet.pth
+Model Parameters: 36.42M
+Test Images: 100
+Avg Inference Time: 0.1219s
+----------------------------------------
+[2025-05-26 10:16:17]
+Config: configs/rotated_fcos/rotated-fcos-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/Rotated-FCOS.pth
+Model Parameters: 32.13M
+Test Images: 100
+Avg Inference Time: 0.1081s
+----------------------------------------
