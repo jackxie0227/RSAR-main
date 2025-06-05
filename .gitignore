@@ -130,5 +130,5 @@ datasets/SIVED/
 *.zip
 *.pth
 
-tools/train_out/
-tools/test_out/
+tools/train_out/*
+tools/test_out/*
