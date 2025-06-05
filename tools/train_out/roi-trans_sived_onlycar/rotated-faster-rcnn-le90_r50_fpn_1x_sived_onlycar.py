@@ -151,16 +151,16 @@ model = dict(
         type='mmdet.RPNHead'),
     test_cfg=dict(
         rcnn=dict(
-            max_per_img=2000,
+            max_per_img=100,
             min_bbox_size=0,
-            nms=dict(iou_threshold=0.1, type='nms_rotated'),
-            nms_pre=2000,
-            score_thr=0.05),
+            nms=dict(iou_threshold=0.2, type='nms_rotated'),
+            nms_pre=1000,
+            score_thr=0.3),
         rpn=dict(
-            max_per_img=2000,
+            max_per_img=1000,
             min_bbox_size=0,
             nms=dict(iou_threshold=0.7, type='nms'),
-            nms_pre=2000)),
+            nms_pre=1000)),
     train_cfg=dict(
         rcnn=dict(
             assigner=dict(
@@ -205,23 +205,23 @@ model = dict(
     type='mmdet.FasterRCNN')
 optim_wrapper = dict(
     clip_grad=dict(max_norm=35, norm_type=2),
-    optimizer=dict(lr=0.005, momentum=0.9, type='SGD', weight_decay=0.0001),
+    optimizer=dict(lr=0.0025, momentum=0.9, type='SGD', weight_decay=0.0005),
     type='OptimWrapper')
 param_scheduler = [
     dict(
         begin=0,
         by_epoch=False,
-        end=500,
+        end=200,
         start_factor=0.3333333333333333,
         type='LinearLR'),
     dict(
         begin=0,
         by_epoch=True,
-        end=12,
+        end=50,
         gamma=0.1,
         milestones=[
-            8,
-            11,
+            30,
+            40,
         ],
         type='MultiStepLR'),
 ]
@@ -236,20 +236,9 @@ test_dataloader = dict(
         pipeline=[
             dict(backend_args=None, type='mmdet.LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
-                800,
-                800,
+                512,
+                512,
             ), type='mmdet.Resize'),
-            dict(
-                pad_val=dict(img=(
-                    0,
-                    0,
-                    0,
-                )),
-                size=(
-                    800,
-                    800,
-                ),
-                type='mmdet.Pad'),
             dict(
                 box_type='qbox', type='mmdet.LoadAnnotations', with_bbox=True),
             dict(
@@ -289,17 +278,9 @@ test_evaluator = dict(
 test_pipeline = [
     dict(backend_args=None, type='mmdet.LoadImageFromFile'),
     dict(keep_ratio=True, scale=(
-        800,
-        800,
+        512,
+        512,
     ), type='mmdet.Resize'),
-    dict(pad_val=dict(img=(
-        0,
-        0,
-        0,
-    )), size=(
-        800,
-        800,
-    ), type='mmdet.Pad'),
     dict(box_type='qbox', type='mmdet.LoadAnnotations', with_bbox=True),
     dict(box_type_mapping=dict(gt_bboxes='rbox'), type='ConvertBoxType'),
     dict(
@@ -312,7 +293,7 @@ test_pipeline = [
         ),
         type='mmdet.PackDetInputs'),
 ]
-train_cfg = dict(max_epochs=12, type='EpochBasedTrainLoop', val_interval=1)
+train_cfg = dict(max_epochs=50, type='EpochBasedTrainLoop', val_interval=2)
 train_dataloader = dict(
     batch_sampler=None,
     batch_size=2,
@@ -329,28 +310,24 @@ train_dataloader = dict(
                 box_type_mapping=dict(gt_bboxes='rbox'),
                 type='ConvertBoxType'),
             dict(keep_ratio=True, scale=(
-                800,
-                800,
+                512,
+                512,
             ), type='mmdet.Resize'),
-            dict(
-                pad_val=dict(img=(
-                    0,
-                    0,
-                    0,
-                )),
-                size=(
-                    800,
-                    800,
-                ),
-                type='mmdet.Pad'),
             dict(
                 direction=[
                     'horizontal',
                     'vertical',
                     'diagonal',
                 ],
-                prob=0.75,
+                prob=0.5,
                 type='mmdet.RandomFlip'),
+            dict(
+                angle_range=180,
+                prob=0.5,
+                rect_obj_labels=[
+                    0,
+                ],
+                type='mmrotate.RandomRotate'),
             dict(type='mmdet.PackDetInputs'),
         ],
         type='SIVEDDataset'),
@@ -362,25 +339,24 @@ train_pipeline = [
     dict(box_type='qbox', type='mmdet.LoadAnnotations', with_bbox=True),
     dict(box_type_mapping=dict(gt_bboxes='rbox'), type='ConvertBoxType'),
     dict(keep_ratio=True, scale=(
-        800,
-        800,
+        512,
+        512,
     ), type='mmdet.Resize'),
-    dict(pad_val=dict(img=(
-        0,
-        0,
-        0,
-    )), size=(
-        800,
-        800,
-    ), type='mmdet.Pad'),
     dict(
         direction=[
             'horizontal',
             'vertical',
             'diagonal',
         ],
-        prob=0.75,
+        prob=0.5,
         type='mmdet.RandomFlip'),
+    dict(
+        angle_range=180,
+        prob=0.5,
+        rect_obj_labels=[
+            0,
+        ],
+        type='mmrotate.RandomRotate'),
     dict(type='mmdet.PackDetInputs'),
 ]
 val_cfg = dict(type='ValLoop')
@@ -393,20 +369,9 @@ val_dataloader = dict(
         pipeline=[
             dict(backend_args=None, type='mmdet.LoadImageFromFile'),
             dict(keep_ratio=True, scale=(
-                800,
-                800,
+                512,
+                512,
             ), type='mmdet.Resize'),
-            dict(
-                pad_val=dict(img=(
-                    0,
-                    0,
-                    0,
-                )),
-                size=(
-                    800,
-                    800,
-                ),
-                type='mmdet.Pad'),
             dict(
                 box_type='qbox', type='mmdet.LoadAnnotations', with_bbox=True),
             dict(
@@ -446,17 +411,9 @@ val_evaluator = dict(
 val_pipeline = [
     dict(backend_args=None, type='mmdet.LoadImageFromFile'),
     dict(keep_ratio=True, scale=(
-        800,
-        800,
+        512,
+        512,
     ), type='mmdet.Resize'),
-    dict(pad_val=dict(img=(
-        0,
-        0,
-        0,
-    )), size=(
-        800,
-        800,
-    ), type='mmdet.Pad'),
     dict(box_type='qbox', type='mmdet.LoadAnnotations', with_bbox=True),
     dict(box_type_mapping=dict(gt_bboxes='rbox'), type='ConvertBoxType'),
     dict(
