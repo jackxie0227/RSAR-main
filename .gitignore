@@ -125,7 +125,8 @@ tmp
 # custom
 mmrotate/.mim
 weights/
-datasets/
+datasets/RSAR/
+datasets/SIVED/
 *.zip
 *.pth
 
