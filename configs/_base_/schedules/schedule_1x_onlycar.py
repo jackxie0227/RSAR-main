@@ -10,13 +10,13 @@ param_scheduler = [
         start_factor=1.0 / 3,
         by_epoch=False,
         begin=0,
-        end=200), #? warmup ori-500
+        end=100), #? warmup ori-500
     dict(
         type='MultiStepLR',
         begin=0,
-        end=50,
+        end=20,
         by_epoch=True,
-        milestones=[30, 40], #? ori-[8, 11]
+        milestones=[12, 16], #? ori-[8, 11]
         gamma=0.1)
 ]
 
