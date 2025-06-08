@@ -121,8 +121,8 @@ def main(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    
-    args.config = 'configs/rotated_faster_rcnn/rotated-faster-rcnn-le90_r50_fpn_1x_sived_onlycar.py'
-    args.work_dir = 'tools/train_out/roi-trans_sived_onlycar'
+
+    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_sived_onlycar.py'
+    args.work_dir = 'tools/train_out/roi_trans_sived-onlycar'
     
     main(args)
