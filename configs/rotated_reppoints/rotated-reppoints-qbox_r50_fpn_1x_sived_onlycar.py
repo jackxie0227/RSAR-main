@@ -70,23 +70,8 @@ model = dict(
             pos_weight=-1,
             debug=False)),
     test_cfg=dict(
-        nms_pre=2000,
+        nms_pre=1000,
         min_bbox_size=0,
         score_thr=0.3,
-        nms=dict(type='nms_rotated', iou_threshold=0.4),
-        max_per_img=500))
-
-train_pipeline = [
-    dict(type='mmdet.LoadImageFromFile', backend_args={{_base_.backend_args}}),
-    dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
-    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
-    dict(
-        type='mmdet.RandomFlip',
-        prob=0.75,
-        direction=['horizontal', 'vertical', 'diagonal']),
-    dict(type='mmdet.PackDetInputs')
-]
-
-train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
-
-optim_wrapper = dict(optimizer=dict(lr=0.003))
+        nms=dict(type='nms_rotated', iou_threshold=0.2),
+        max_per_img=1000))
