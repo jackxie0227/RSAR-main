@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/sived_onlycar.py', '../_base_/schedules/schedule_1x_onlycar.py',
+    '../_base_/datasets/rsdd.py', '../_base_/schedules/schedule_1x_onlycar.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -193,3 +193,4 @@ model = dict(
             score_thr=0.3,
             nms=dict(type='nms_rotated', iou_threshold=0.2),
             max_per_img=1000)))
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=50, val_interval=2)

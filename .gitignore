@@ -127,9 +127,12 @@ mmrotate/.mim
 weights/
 datasets/RSAR/
 datasets/SIVED/
+datasets/RSDD/
+datasets/SRSDD-V1.0/
 *.zip
 *.pth
 
+tools/train.py
 tools/train_out/
 tools/test_out/
 demo/huge_image_demo.py

@@ -6,7 +6,6 @@ _base_ = [
 angle_version = 'le90'
 model = dict(
     type='mmdet.FasterRCNN',
-    # init_cfg=dict(type='Pretrained', checkpoint=None),
     data_preprocessor=dict(
         type='mmdet.DetDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
@@ -54,7 +53,10 @@ model = dict(
         type='mmdet.StandardRoIHead',
         bbox_roi_extractor=dict(
             type='mmdet.SingleRoIExtractor',
-            roi_layer=dict(type='RoIAlign', output_size=7, sampling_ratio=0),
+            roi_layer=dict(type='RoIAlignRotated', #! 原来是RoIAlign
+                           output_size=7,
+                           sample_num=2,
+                           clockwise=True),
             out_channels=256,
             featmap_strides=[4, 8, 16, 32]),
         bbox_head=dict(
@@ -67,12 +69,13 @@ model = dict(
             reg_predictor_cfg=dict(type='mmdet.Linear'),
             cls_predictor_cfg=dict(type='mmdet.Linear'),
             bbox_coder=dict(
-                type='DeltaXYWHTHBBoxCoder',
-                angle_version=angle_version,
-                norm_factor=2,
-                edge_swap=True,
-                target_means=(.0, .0, .0, .0, .0),
-                target_stds=(0.1, 0.1, 0.2, 0.2, 0.1)),
+                    type='DeltaXYWHTHBBoxCoder',
+                    angle_version=angle_version,
+                    norm_factor=2,
+                    edge_swap=True,
+                    target_means=[.0, .0, .0, .0, .0],
+                    target_stds=[0.1, 0.1, 0.2, 0.2, 0.1],
+                    use_box_type=True),
             reg_class_agnostic=True,
             loss_cls=dict(
                 type='mmdet.CrossEntropyLoss',
@@ -100,8 +103,8 @@ model = dict(
             pos_weight=-1,
             debug=False),
         rpn_proposal=dict(
-            nms_pre=2000,
-            max_per_img=2000,
+            nms_pre=1000,
+            max_per_img=1000,
             nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(

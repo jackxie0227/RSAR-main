@@ -6,6 +6,7 @@ from .hrsc import HRSCDataset  # noqa: F401, F403
 from .transforms import *  # noqa: F401, F403
 from .rsar import RSARDataset
 from .sived import SIVEDDataset
+from .rsdd import RSDDDataset
 
 __all__ = [
     'DOTADataset', 'DOTAv15Dataset', 'DOTAv2Dataset', 'HRSCDataset',

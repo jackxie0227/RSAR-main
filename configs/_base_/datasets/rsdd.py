@@ -1,49 +1,52 @@
-# dataset settings
-dataset_type = 'mmdet.CocoDataset'
-data_root = 'data/rsdd/'
+#~ 用于训练旋转框标注的 SIVED 数据集
+dataset_type = 'RSDDDataset'
+data_root = 'datasets/RSDD/'
 backend_args = None
 
+# ---------------------- #
+# RandomResize 随机缩放
+# RandomFlip 随机翻转
+# RandomRotate 随机旋转
+# RandomCrop 随机裁剪
+# AutoAugment 自动增强
+# ---------------------- #
 train_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(
-        type='mmdet.LoadAnnotations',
-        with_bbox=True,
-        with_mask=True,
-        poly2mask=False),
-    dict(type='ConvertMask2BoxType', box_type='rbox'),
-    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
+    dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
+    dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
+    dict(type='mmdet.Resize',
+         scale=(1024, 1024),
+         keep_ratio=True),
     dict(
         type='mmdet.RandomFlip',
-        prob=0.75,
+        prob=0.5,
         direction=['horizontal', 'vertical', 'diagonal']),
+    dict(type='mmrotate.RandomRotate',
+         prob=0.5,
+         angle_range=180,
+         rect_obj_labels=[0]),
     dict(type='mmdet.PackDetInputs')
 ]
 val_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
-    # avoid bboxes being resized
-    dict(
-        type='mmdet.LoadAnnotations',
-        with_bbox=True,
-        with_mask=True,
-        poly2mask=False),
-    dict(type='ConvertMask2BoxType', box_type='qbox'),
-    dict(
-        type='mmdet.PackDetInputs',
-        meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
-                   'scale_factor', 'instances'))
-]
-test_pipeline = [
-    dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
+    dict(type='mmdet.Resize', scale=(1024, 1024), keep_ratio=True),
+    dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
+    dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(
         type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
                    'scale_factor'))
 ]
-
-metainfo = dict(classes=('ship', ))
-
+test_pipeline = [
+    dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
+    dict(type='mmdet.Resize', scale=(1024, 1024), keep_ratio=True),
+    dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
+    dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
+    dict(
+        type='mmdet.PackDetInputs',
+        meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
+                   'scale_factor'))
+]
 train_dataloader = dict(
     batch_size=2,
     num_workers=2,
@@ -52,13 +55,11 @@ train_dataloader = dict(
     batch_sampler=None,
     dataset=dict(
         type=dataset_type,
-        metainfo=metainfo,
         data_root=data_root,
-        ann_file='ImageSets/train.json',
-        data_prefix=dict(img='JPEGImages/'),
+        ann_file='train/annfiles_qbox/', # 标注文件夹路径
+        data_prefix=dict(img_path='train/images/'), # 图像文件夹路径
         filter_cfg=dict(filter_empty_gt=True),
-        pipeline=train_pipeline,
-        backend_args=backend_args))
+        pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
     num_workers=2,
@@ -67,15 +68,28 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
-        metainfo=metainfo,
         data_root=data_root,
-        ann_file='ImageSets/test.json',
-        data_prefix=dict(img='JPEGImages/'),
+        ann_file='test/annfiles_qbox/',
+        data_prefix=dict(img_path='test/images/'),
         test_mode=True,
-        pipeline=val_pipeline,
-        backend_args=backend_args))
+        pipeline=val_pipeline))
 test_dataloader = val_dataloader
 
-val_evaluator = dict(type='RotatedCocoMetric', metric='bbox')
-
+val_evaluator = dict(type='DOTAMetric', metric='mAP', iou_thrs=[0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
 test_evaluator = val_evaluator
+
+# inference on test dataset and format the output results
+# for submission. Note: the test set has no annotation.
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type,
+        data_root=data_root,
+        ann_file='test/annfiles_qbox/',
+        data_prefix=dict(img_path='test/images/'),
+        test_mode=True,
+        pipeline=test_pipeline))
