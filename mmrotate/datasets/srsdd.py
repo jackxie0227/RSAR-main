@@ -22,9 +22,15 @@ class SRSDDDataset(BaseDataset):
             value should be non-negative integer. Defaults to 100.
         img_suffix (str): The suffix of images. Defaults to 'png'.
     """
+#     Container
+# ore-oil
+# Dredger
+# LawEnforce
+# Cell-Container
+# Fishing
 
     METAINFO = {
-        'classes': ('ore-oil','Cell-Container', 'Fishing', 'Dredger', 'Container', 'LawEnforce'),
+        'classes': ('Container','ore-oil', 'Dredger', 'LawEnforce', 'Cell-Container', 'Fishing'),
         # palette is a list of color tuples, which is used for visualization.
         'palette':
         [(220, 20, 60), (0, 0, 230), (106, 0, 228),
