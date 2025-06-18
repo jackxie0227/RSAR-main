@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(type='mmdet.Resize',
-         scale=(1024, 1024),
+         scale=(512, 512),
          keep_ratio=True),
     dict(
         type='mmdet.RandomFlip',
@@ -29,7 +29,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(1024, 1024), keep_ratio=True),
+    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(
@@ -39,7 +39,7 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(1024, 1024), keep_ratio=True),
+    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(
@@ -48,7 +48,7 @@ test_pipeline = [
                    'scale_factor'))
 ]
 train_dataloader = dict(
-    batch_size=4,
+    batch_size=4, # origin 2
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -61,7 +61,7 @@ train_dataloader = dict(
         filter_cfg=dict(filter_empty_gt=True),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=2,
+    batch_size=2, # origin 1
     num_workers=2,
     persistent_workers=True,
     drop_last=False,
