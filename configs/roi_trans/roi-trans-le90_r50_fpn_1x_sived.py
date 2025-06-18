@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/sived.py', '../_base_/schedules/schedule_3x.py',
+    '../_base_/datasets/sived_onlycar.py', '../_base_/schedules/schedule_3x.py',
     '../_base_/default_runtime.py'
 ]
 
