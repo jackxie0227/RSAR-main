@@ -136,4 +136,28 @@ model = dict(
             nms=dict(type='nms_rotated', iou_threshold=0.2),
             max_per_img=100)))
 
+# learning rate
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=1.0 / 5,  # 降低起始因子
+        by_epoch=False,
+        begin=0,
+        end=300),  # 延长预热阶段至300次迭代
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=20,
+        by_epoch=True,
+        milestones=[8, 14, 18],  # 增加一个中间衰减点
+        gamma=0.2)  # 每次衰减幅度增大
+]
+# optimizer
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='SGD',
+                   lr=0.001,  # 从0.0025降至0.001
+                   momentum=0.9,
+                   weight_decay=0.0005),
+    clip_grad=dict(max_norm=35, norm_type=2))
 
