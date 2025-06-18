@@ -7,8 +7,10 @@ from .transforms import *  # noqa: F401, F403
 from .rsar import RSARDataset
 from .sived import SIVEDDataset
 from .rsdd import RSDDDataset
+from .srsdd import SRSDDDataset
+
 
 __all__ = [
     'DOTADataset', 'DOTAv15Dataset', 'DOTAv2Dataset', 'HRSCDataset',
-    'DIORDataset', 'RSARDataset', 'SIVEDDataset'
+    'DIORDataset', 'RSARDataset', 'SIVEDDataset', 'RSDDDataset', 'SRSDDDataset'
 ]

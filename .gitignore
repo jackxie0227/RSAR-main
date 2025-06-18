@@ -129,7 +129,7 @@ datasets/RSAR/
 datasets/SIVED/
 datasets/RSDD/
 datasets/RSDD-Ori/
-datasets/SRSDD-V1.0/
+datasets/SRSDD/
 *.zip
 *.pth
 

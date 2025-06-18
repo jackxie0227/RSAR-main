@@ -124,15 +124,9 @@ def main(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    
-    # Weak Supervise Model
-    # args.config = 'configs/h2rbox_v2/h2rbox_v2-le90_r50_fpn-1x_rsar_ucr_2d.py'
-    # args.checkpoint = 'weights/WSModel/h2rbox_v2-le90_r50_fpn-1x_rsar_ucr_d2_epoch_12.pth'
-    # args.work_dir = 'tools/test_out'
-    
-    # Fully Supervise Model
-    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_sived.py'
-    args.checkpoint = 'weights/FSModel/ROI-Transformer-Adjust.pth'
-    args.work_dir = 'tools/test_out/sived_roi-tf-adjust/'
+
+    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_sived_onlycar.py'
+    args.checkpoint = 'weights/SIVEDModel/ROI_Transformer.pth'
+    args.work_dir = 'tools/test_out/SIVED_ROI_Transformer/'
     
     main(args)

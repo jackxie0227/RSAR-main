@@ -1,0 +1,10 @@
+[2025-06-10 10:12:04]
+ Config: configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsar.py
+Checkpoint: weights/FSModel/ROI-Transformer.pth
+Test Images: 20
+Average time per image: 5.19 seconds.
+patch_sizes: [512]
+patch_steps: [500]
+img_ratios: [1.0]
+merge_iou_thr: 0.2
+score_thr: 0.3

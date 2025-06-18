@@ -111,7 +111,24 @@ def merge_results_by_nms(results: SampleList, offsets: np.ndarray,
             pred_inst.masks = map_masks(pred_inst.masks, offset, img_shape)
         pred_instances.append(pred_inst)
 
+    if not pred_instances:
+        # 如果所有patch都没有检测到目标，返回空结果
+        empty_result = DetDataSample()
+        empty_result.update(results[0])
+        empty_instances = InstanceData()
+        empty_instances.bboxes = results[0].pred_instances.bboxes.new_zeros((0, 5))
+        empty_instances.scores = results[0].pred_instances.scores.new_zeros((0,))
+        empty_instances.labels = results[0].pred_instances.labels.new_zeros((0,))
+        empty_result.pred_instances = empty_instances
+        return empty_result
+
     instances = InstanceData.cat(pred_instances)
+    if len(instances.bboxes) == 0:
+        merged_result = DetDataSample()
+        merged_result.update(results[0])
+        merged_result.pred_instances = instances
+        return merged_result
+
     _, keeps = batched_nms(
         boxes=instances.bboxes,
         scores=instances.scores,
