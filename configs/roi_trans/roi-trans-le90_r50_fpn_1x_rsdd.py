@@ -193,4 +193,3 @@ model = dict(
             score_thr=0.3,
             nms=dict(type='nms_rotated', iou_threshold=0.2),
             max_per_img=1000)))
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=50, val_interval=2)
