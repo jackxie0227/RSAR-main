@@ -122,7 +122,7 @@ def main(args):
 if __name__ == '__main__':
     args = parse_args()
 
-    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsdd.py'
-    args.work_dir = 'tools/train_out/roi_trans-rsdd'
+    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_3x_sived.py'
+    args.work_dir = 'tools/train_out/roi_trans-sived-3x'
     
     main(args)

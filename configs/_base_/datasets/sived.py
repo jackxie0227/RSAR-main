@@ -1,25 +1,35 @@
-# dataset settings
-dataset_type = 'RSARDataset'
+#~ 用于训练旋转框标注的 SIVED 数据集
+dataset_type = 'SIVEDDataset'
 data_root = 'datasets/SIVED/'
 backend_args = None
 
+# ---------------------- #
+# RandomResize 随机缩放
+# RandomFlip 随机翻转
+# RandomRotate 随机旋转
+# RandomCrop 随机裁剪
+# AutoAugment 自动增强
+# ---------------------- #
 train_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
-    dict(type='mmdet.Resize', scale=(800, 800), keep_ratio=True),
-    dict(type='mmdet.Pad', size=(800, 800), pad_val=dict(img=(0, 0, 0))), 
+    dict(type='mmdet.Resize',
+         scale=(512, 512),
+         keep_ratio=True),
     dict(
         type='mmdet.RandomFlip',
-        prob=0.75,
+        prob=0.5,
         direction=['horizontal', 'vertical', 'diagonal']),
+    dict(type='mmrotate.RandomRotate',
+         prob=0.5,
+         angle_range=180,
+         rect_obj_labels=[0]),
     dict(type='mmdet.PackDetInputs')
 ]
 val_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(800, 800), keep_ratio=True),
-    dict(type='mmdet.Pad', size=(800, 800), pad_val=dict(img=(0, 0, 0))), 
-    # avoid bboxes being resized
+    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(
@@ -29,9 +39,7 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(type='mmdet.LoadImageFromFile', backend_args=backend_args),
-    dict(type='mmdet.Resize', scale=(800, 800), keep_ratio=True),
-    dict(type='mmdet.Pad', size=(800, 800), pad_val=dict(img=(0, 0, 0))), 
-    # If you don't have a gt annotation, delete the pipeline
+    dict(type='mmdet.Resize', scale=(512, 512), keep_ratio=True),
     dict(type='mmdet.LoadAnnotations', with_bbox=True, box_type='qbox'),
     dict(type='ConvertBoxType', box_type_mapping=dict(gt_bboxes='rbox')),
     dict(

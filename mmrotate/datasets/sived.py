@@ -27,7 +27,7 @@ class SIVEDDataset(BaseDataset):
         'classes': ('car',),
         # palette is a list of color tuples, which is used for visualization.
         'palette':
-        [(220, 20, 60)]
+        [(34, 139, 34)]
     }
 
     def __init__(self,
