@@ -44,7 +44,11 @@ model = dict(
             target_means=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             target_stds=[1.0, 1.0, 1.0, 1.0, 0.5, 0.5]),
         loss_cls=dict(
-            type='mmdet.CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
+            type='mmdet.FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            loss_weight=1.0),
         loss_bbox=dict(
             type='mmdet.SmoothL1Loss',
             beta=0.1111111111111111,
@@ -79,8 +83,10 @@ model = dict(
                 target_stds=(0.1, 0.1, 0.2, 0.2, 0.1)),
             reg_class_agnostic=True,
             loss_cls=dict(
-                type='mmdet.CrossEntropyLoss',
-                use_sigmoid=False,
+                type='mmdet.FocalLoss',
+                use_sigmoid=True,
+                gamma=2.0,
+                alpha=0.25,
                 loss_weight=1.0),
             loss_bbox=dict(
                 type='mmdet.SmoothL1Loss', beta=1.0, loss_weight=1.0))),
@@ -139,3 +145,4 @@ model = dict(
             max_per_img=2000)))
 
 optim_wrapper = dict(optimizer=dict(lr=0.005))
+
