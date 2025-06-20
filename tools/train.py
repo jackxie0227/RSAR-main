@@ -122,7 +122,7 @@ def main(args):
 if __name__ == '__main__':
     args = parse_args()
     
-    args.config = 'configs/oriented_rcnn/oriented-rcnn-le90_r50_fpn_6x_srsdd.py'
-    args.work_dir = 'tools/train_out/oriented_rcnn-srsdd'
+    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_6x_rsdd.py'
+    args.work_dir = 'tools/train_out/roi_trans-rsdd-6x'
     
     main(args)

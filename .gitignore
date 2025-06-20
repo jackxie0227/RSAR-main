@@ -136,4 +136,6 @@ datasets/SRSDD/
 tools/train.py
 tools/train_out/
 tools/test_out/
+demo/input/
+demo/output/
 demo/huge_image_demo.py

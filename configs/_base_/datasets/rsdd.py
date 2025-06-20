@@ -85,7 +85,7 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='test/annfiles_qbox/',
-        data_prefix=dict(img_path='test/images/'),
+        ann_file='test_offshore/annfiles_qbox/',
+        data_prefix=dict(img_path='test_offshore/images/'),
         test_mode=True,
         pipeline=test_pipeline))
