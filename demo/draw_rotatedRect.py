@@ -28,8 +28,13 @@ def draw_rotated_rectangles(img, meta, pred_instances, threshold=0.3):
     draw_img = img.copy()
     
     try:
-        classes = meta.get('classes', ('car',)) 
-        COLORS = RSAR_COLORS if len(classes) > 1 else SIVED_COLORS
+        classes = meta.get('classes') 
+        COLORS = {}
+        for class_name in classes:
+            if class_name in RSAR_COLORS:
+                COLORS[class_name] = RSAR_COLORS[class_name]
+            else:
+                raise ValueError("no valid class colour")
     except AttributeError:
         raise ValueError("model.dataset_meta must contain 'classes' key with class names.")
     

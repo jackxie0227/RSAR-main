@@ -65,7 +65,8 @@ def is_image_file(path, extensions):
     return os.path.isfile(path) and os.path.splitext(path)[1].lower() in extensions
 
 import time
-def process_single_image(model, visualizer, img_path, out_dir, nms_cfg, patch_steps, patch_sizes, img_ratios):
+from draw_rotatedRect import draw_rotated_rectangles
+def process_single_image(model, visualizer, img_path, out_dir, nms_cfg, patch_steps, patch_sizes, img_ratios, score_thr):
     img = mmcv.imread(img_path)
     img = mmcv.imconvert(img, 'bgr', 'rgb')
     
@@ -78,15 +79,17 @@ def process_single_image(model, visualizer, img_path, out_dir, nms_cfg, patch_st
     filename = os.path.basename(img_path)
     out_path = os.path.join(out_dir, f"{filename}")
     
-    visualizer.add_datasample(
-        'result',
-        img,
-        data_sample=result,
-        draw_gt=False,
-        show=False,
-        wait_time=0,
-        out_file=out_path,
-        pred_score_thr=args.score_thr)
+    save_img, _, _, _ = draw_rotated_rectangles(img, model.dataset_meta, result.pred_instances, score_thr)
+    mmcv.imwrite(save_img, out_path)
+    # visualizer.add_datasample(
+    #     'result',
+    #     img,
+    #     data_sample=result,
+    #     draw_gt=False,
+    #     show=False,
+    #     wait_time=0,
+    #     out_file=out_path,
+    #     pred_score_thr=args.score_thr)
     
     return elapsed, out_path
 
@@ -112,7 +115,7 @@ def main(args):
     if is_image_file(args.img, args.extensions):
         elapsed, out_path = process_single_image(
             model, visualizer, args.img, os.path.dirname(args.out_file), nms_cfg,
-            args.patch_steps, args.patch_sizes, args.img_ratios)
+            args.patch_steps, args.patch_sizes, args.img_ratios, args.score_thr)
         processed_files = [args.img]
     elif os.path.isdir(args.img):
         img_list = []
@@ -126,14 +129,14 @@ def main(args):
         for idx, img_path in enumerate(img_list):
             elapsed, _ = process_single_image(
                 model, visualizer, img_path, args.out_file, nms_cfg,
-                args.patch_steps, args.patch_sizes, args.img_ratios)
+                args.patch_steps, args.patch_sizes, args.img_ratios, args.score_thr)
             processed_files.append(img_path)
             total_elapsed += elapsed
             print(f"Processed {idx + 1}/{len(img_list)}: {os.path.basename(img_path)}")
         num_images = len(img_list)
         avg_elapsed = total_elapsed / num_images if num_images > 0 else 0
         
-        log_file = os.path.join(os.path.dirname(args.out_file), 'inference_log.txt')
+        log_file = os.path.join(args.out_file, 'inference_log.txt')
         log_content = (
             f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]\n "
             f"Config: {args.config}\n"
@@ -157,9 +160,42 @@ def main(args):
 if __name__ == '__main__':
     args = parse_args()
     
-    args.img = 'demo/input/hugeImages'
-    args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_sived_onlycar.py'
-    args.checkpoint = 'weights/SIVEDModel/ROI_Transformer.pth'
-    args.out_file = 'demo/output/hugeImages/ROI_Transformer'
+    #* Single Image Predict
+    # ROI_Transformer SIVEDModel
+    # args.img = 'demo/input/hugeImages/MiniSAR20050519p0006image004.png'
+    # args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_sived_onlycar.py'
+    # args.checkpoint = 'weights/SIVEDModel/ROI-Transformer.pth'
+    # args.out_file = 'demo/output/hugeImages/ROI-Transformer-SIVED'
+    
+    # ROI_Transformer SARModel - SIVEDAdjust
+    # args.img = 'demo/input/hugeImages/MiniSAR20050519p0006image004.png'
+    # args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsar.py'
+    # args.checkpoint = 'weights/FSModel/ROI-Transformer-Adjust.pth'
+    # args.out_file = 'demo/output/hugeImages/ROI-Transformer-RSAR-Adjust'
+    
+    #* Folder Predict
+    # ROI_Transformer SIVEDModel - 3x
+    # args.img = 'demo/input/hugeImages'
+    # args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_3x_sived.py'
+    # args.checkpoint = 'weights/SIVEDModel/roi_trans-sived-3x.pth'
+    # args.out_file = 'demo/output/hugeImages/roi_trans-sived-3x'
+    
+    # ROI_Transformer SARModel - SIVEDAdjust
+    # args.img = 'demo/input/hugeImages/'
+    # args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsar.py'
+    # args.checkpoint = 'weights/FSModel/ROI-Transformer-Adjust.pth'
+    # args.out_file = 'demo/output/hugeImages/ROI-Transformer-RSAR-Adjust'
+    
+    # ROI_Transformer SARModel - RSAR
+    # args.img = 'demo/input/hugeImages/'
+    # args.config = 'configs/roi_trans/roi-trans-le90_r50_fpn_1x_rsar.py'
+    # args.checkpoint = 'weights/FSModel/ROI-Transformer.pth'
+    # args.out_file = 'demo/output/hugeImages/ROI-Transformer-RSAR'
+    
+    # Oriented-RCNN SARModel - RSDD
+    args.img = 'demo/input/RSDD'
+    args.config = 'configs/oriented_rcnn/oriented-rcnn-le90_r50_fpn_6x_rsdd.py'
+    args.checkpoint = 'weights/RSDDModel/oriented_rcnn-rsdd-6x.pth'
+    args.out_file = 'demo/output/hugeImages/Oriented-RCNN-RSDD'
     
     main(args)
